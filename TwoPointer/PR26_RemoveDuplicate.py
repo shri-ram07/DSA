@@ -33,8 +33,26 @@ class Solution(object):
         Then we can convert the dictionary back to list
         nums = list(nums_dict.keys())
         Finally return the length of the list"""
+        # best Approach : Using these two pointers , slow and fast , just checking for all unique 
+        # values and placing them to index of slow pointer
+        # and increamenting the slow pointer only when unique value is found
+
+        # Initialising slow pointer
+        k = 1
+        if len(nums)!=1:
+            # Iterating through the array from index 1 to end
+            # 
+            for i in range(1,len(nums)):
+                # Checking if current element is not equal to previous element
+                if nums[i] != nums[i-1]:
+                    # If not equal then placing the current element at index of slow pointer
+                    nums[k] = nums[i]
+                    #increamenting slow pointer
+                    k+=1
         
-         
+        return k
+
+
       
             
         
