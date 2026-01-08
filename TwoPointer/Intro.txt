@@ -1,0 +1,6 @@
+In two Pointer Pattern we Take two pointers and iterate as per our need, The Usage of Two pointer can be decided by few things :
+1 - If we are dealing with the sorted arrays
+2 - If we are comparing two arrays or combining two arrays
+3 - If we want to track two positions without nested loops
+4 - Move or Shrink the window in sliding window approach
+5 - For checkingh palindrone in String from both end two pointer
