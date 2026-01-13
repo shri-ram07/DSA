@@ -1,0 +1,67 @@
+                        Sliding Window 
+
+==============================================================
+It is an approach to traverse a linear data structure like 
+list , or string by traversing a window over the data
+for example I want to cnsider two element in one window
+and Trvaerse the whole array with that window , we will use
+Fixed wondow Approach to print all the elemnts that appears in
+window
+
+==============================================================
+
+                            Type
+
+==============================================================
+
+1 - Fixed window Size
+2 - Variable window Size
+
+==============================================================
+
+                            Example
+
+class Solution(object):
+    def showWindows(self, s):
+        l , r = 0 , 2
+        
+        while r<len(s):
+            window = s[l:r]
+            print("Window is : " ,window)
+            r+=2
+            l+=2
+
+# Implimenent of class
+obj = Solution()
+obj.showWindows([1,2,3,4,5,6,7,8,9,0])
+
+                            Output
+
+('Window is : ', [1, 2])
+('Window is : ', [3, 4])
+('Window is : ', [5, 6])
+('Window is : ', [7, 8])
+('Window is : ', [9, 0])
+
+
+==============================================================
+
+
+We always use two Pointers to update the position and size of that window
+
+We will increase r to change the position and increase the window size
+while increase the l to decrease the size in varibale side window
+
+[1,2,3,4,5,6,7,8,9,0]
+ |   |
+ l   r
+
+[1,2,3,4,5,6,7,8,9,0]
+     |   |
+     l   r
+
+[1,2,3,4,5,6,7,8,9,0]
+         |   |
+         l   r
+
+==============================================================
