@@ -1,0 +1,39 @@
+class Solution(object):
+    """
+    A class to implement the strStr() function, which finds the starting index 
+    of the first occurrence of a substring (needle) inside another string (haystack).
+
+    Problem:
+    - Given two strings: haystack and needle.
+    - Return the index of the first occurrence of needle in haystack.
+    - If needle is not found, return -1.
+
+    Approach:
+    - Use a simple sliding window technique.
+    - First, check if the needle exists in the haystack at all.
+    - If not, return -1 immediately.
+    - If it exists, iterate through haystack character by character.
+    - At each position, compare the substring of haystack (of length equal to needle)
+      with the needle.
+    - If they match, return the current index.
+    """
+
+    def strStr(self, haystack, needle):
+        # Pointer to track current index in haystack
+        r = 0
+
+        # Quick check: if needle is not present at all, return -1
+        if needle not in haystack:
+            return -1
+
+        # Iterate through haystack
+        while r < len(haystack):
+            # Check if the current character matches the first character of needle
+            if haystack[r] == needle[0]:
+                # Compare substring of haystack with needle
+                if haystack[r:r + len(needle)] == needle:
+                    return r  # Found the starting index
+            r += 1  # Move to the next character
+
+        # If no match found, return -1 (though this case is already handled above)
+        return -1
