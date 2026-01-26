@@ -1,0 +1,543 @@
+================================================================================
+                              BINARY SEARCH - COMPLETE GUIDE
+================================================================================
+
+## What is Binary Search?
+-------------------------
+Binary Search is a divide-and-conquer algorithm that finds the position of a
+target value within a SORTED array. It works by repeatedly dividing the search
+interval in half.
+
+Time Complexity: O(log n)
+Space Complexity: O(1) for iterative, O(log n) for recursive
+
+
+## How Binary Search Works
+--------------------------
+
+Given sorted array: [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+Target: 23
+
+Step 1: Find middle element
+    [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+     L              M                  R
+     0              4                  9
+
+    mid = (0 + 9) / 2 = 4
+    arr[4] = 16 < 23, so search RIGHT half
+
+Step 2: Update left pointer
+    [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+                      L    M           R
+                      5    7           9
+
+    mid = (5 + 9) / 2 = 7
+    arr[7] = 56 > 23, so search LEFT half
+
+Step 3: Update right pointer
+    [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+                      L   M   R
+                      5   5   6
+
+    mid = (5 + 6) / 2 = 5
+    arr[5] = 23 == 23, FOUND at index 5!
+
+
+## Visual Representation of Binary Search
+-----------------------------------------
+
+                    +---+---+---+---+---+---+---+---+
+    Array:          | 1 | 3 | 5 | 7 | 9 |11 |13 |15 |
+                    +---+---+---+---+---+---+---+---+
+    Index:            0   1   2   3   4   5   6   7
+
+    Target = 11
+
+    Iteration 1:      L               M               R
+                      |               |               |
+                      v               v               v
+                    +---+---+---+---+---+---+---+---+
+                    | 1 | 3 | 5 | 7 | 9 |11 |13 |15 |
+                    +---+---+---+---+---+---+---+---+
+                    mid=3, arr[3]=7 < 11 → go RIGHT
+
+    Iteration 2:                          L   M       R
+                                          |   |       |
+                                          v   v       v
+                    +---+---+---+---+---+---+---+---+
+                    | 1 | 3 | 5 | 7 | 9 |11 |13 |15 |
+                    +---+---+---+---+---+---+---+---+
+                    mid=5, arr[5]=11 == 11 → FOUND!
+
+
+================================================================================
+                         BINARY SEARCH PATTERNS IN DSA
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        PATTERN 1: STANDARD BINARY SEARCH                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Find exact target in sorted array
+
+Template:
+---------
+    def binary_search(arr, target):
+        left, right = 0, len(arr) - 1
+
+        while left <= right:
+            mid = left + (right - left) // 2   # Prevents overflow
+
+            if arr[mid] == target:
+                return mid
+            elif arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return -1  # Not found
+
+Diagram:
+--------
+    Condition: left <= right
+
+         left                right
+          |                    |
+          v                    v
+        +---+---+---+---+---+---+
+        | 1 | 2 | 3 | 4 | 5 | 6 |
+        +---+---+---+---+---+---+
+                  ^
+                  |
+                 mid
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PATTERN 2: LOWER BOUND (First Occurrence)                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Find FIRST position where arr[i] >= target
+          Find first occurrence of target in array with duplicates
+
+Template:
+---------
+    def lower_bound(arr, target):
+        left, right = 0, len(arr)
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] < target:
+                left = mid + 1
+            else:
+                right = mid     # Don't skip mid, it could be answer
+
+        return left
+
+Diagram:
+--------
+    Array: [1, 2, 2, 2, 3, 4, 5]
+    Target: 2
+
+    Find first occurrence of 2:
+
+        +---+---+---+---+---+---+---+
+        | 1 | 2 | 2 | 2 | 3 | 4 | 5 |
+        +---+---+---+---+---+---+---+
+          0   1   2   3   4   5   6
+              ^
+              |
+         Lower Bound (index 1)
+
+    Visual Search Process:
+
+    [1, 2, 2, 2, 3, 4, 5]     mid=3, arr[3]=2 >= 2, right=3
+     L        M        R
+
+    [1, 2, 2, 2, 3, 4, 5]     mid=1, arr[1]=2 >= 2, right=1
+     L  M     R
+
+    [1, 2, 2, 2, 3, 4, 5]     left==right, return 1
+        LR
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PATTERN 3: UPPER BOUND (Last Occurrence)                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Find FIRST position where arr[i] > target
+          Find last occurrence of target (upper_bound - 1)
+
+Template:
+---------
+    def upper_bound(arr, target):
+        left, right = 0, len(arr)
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] <= target:
+                left = mid + 1
+            else:
+                right = mid
+
+        return left
+
+Diagram:
+--------
+    Array: [1, 2, 2, 2, 3, 4, 5]
+    Target: 2
+
+        +---+---+---+---+---+---+---+
+        | 1 | 2 | 2 | 2 | 3 | 4 | 5 |
+        +---+---+---+---+---+---+---+
+          0   1   2   3   4   5   6
+                      ^   ^
+                      |   |
+            Last 2 ───┘   └─── Upper Bound (index 4)
+            (index 3)
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              PATTERN 4: BINARY SEARCH ON ANSWER (Minimize/Maximize)         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Find minimum/maximum value that satisfies a condition
+          - Minimize maximum
+          - Maximize minimum
+          - Capacity problems
+          - Allocation problems
+
+Template (Minimize):
+--------------------
+    def binary_search_on_answer(low, high):
+        result = high
+
+        while low <= high:
+            mid = low + (high - low) // 2
+
+            if is_feasible(mid):
+                result = mid           # mid works, try smaller
+                high = mid - 1
+            else:
+                low = mid + 1          # mid doesn't work, try larger
+
+        return result
+
+Diagram:
+--------
+    Problem: Find minimum capacity to ship packages in D days
+
+    Search Space: [max_weight, sum_of_weights]
+
+                    NOT FEASIBLE          |        FEASIBLE
+                    (can't ship in D days)|   (can ship in D days)
+    ←───────────────────────────────────────────────────────────────→
+    low                                   |                      high
+                                          ^
+                                          |
+                                    Answer (minimum)
+
+    Example: Capacity to Ship Packages Within D Days
+
+    Packages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    Days: 5
+
+    Search: [10, 55]  (max single package, total sum)
+
+        10  15  20  25  30  35  40  45  50  55
+         X   ✓   ✓   ✓   ✓   ✓   ✓   ✓   ✓   ✓
+         |   |
+         |   └── First feasible = Answer = 15
+         └────── Not feasible
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                   PATTERN 5: ROTATED SORTED ARRAY                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Search in array that was sorted then rotated
+
+Template:
+---------
+    def search_rotated(arr, target):
+        left, right = 0, len(arr) - 1
+
+        while left <= right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] == target:
+                return mid
+
+            # Check which half is sorted
+            if arr[left] <= arr[mid]:  # Left half is sorted
+                if arr[left] <= target < arr[mid]:
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            else:                       # Right half is sorted
+                if arr[mid] < target <= arr[right]:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+
+        return -1
+
+Diagram:
+--------
+    Original sorted: [1, 2, 3, 4, 5, 6, 7]
+
+    After rotation at index 3:
+
+        7 |                 *
+        6 |             *
+        5 |         *
+          |                         Rotation Point
+        4 |                             *
+        3 |                         *
+        2 |                     *
+        1 |                 *
+          +─────────────────────────────────
+            0   1   2   3   4   5   6
+
+    Rotated Array: [5, 6, 7, 1, 2, 3, 4]
+                    ↑_____↑  ↑_______↑
+                    Sorted    Sorted
+                    (higher)  (lower)
+
+    Key Insight: At least one half is ALWAYS sorted!
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      PATTERN 6: FIND PEAK ELEMENT                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Find local maximum in array where neighbors are different
+
+Template:
+---------
+    def find_peak(arr):
+        left, right = 0, len(arr) - 1
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] < arr[mid + 1]:
+                left = mid + 1      # Peak is on right
+            else:
+                right = mid         # Peak is on left or at mid
+
+        return left
+
+Diagram:
+--------
+    Array: [1, 3, 5, 7, 6, 4, 2]
+
+                    Peak
+                      ↓
+        7 |         *
+        6 |             *
+        5 |     *
+        4 |                 *
+        3 |   *
+        2 |                     *
+        1 | *
+          +─────────────────────────
+            0   1   2   3   4   5   6
+
+    Logic:
+    - If arr[mid] < arr[mid+1]: peak is to the RIGHT
+    - If arr[mid] > arr[mid+1]: peak is to the LEFT or at mid
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PATTERN 7: SEARCH IN 2D MATRIX                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Use Case: Search in row-wise and column-wise sorted matrix
+
+Type 1: Rows sorted, first element of row > last element of previous row
+------------------------------------------------------------------------
+
+    Matrix:
+        +----+----+----+----+
+        |  1 |  3 |  5 |  7 |
+        +----+----+----+----+
+        | 10 | 11 | 16 | 20 |
+        +----+----+----+----+
+        | 23 | 30 | 34 | 50 |
+        +----+----+----+----+
+
+    Treat as 1D array:
+    [1, 3, 5, 7, 10, 11, 16, 20, 23, 30, 34, 50]
+     0  1  2  3   4   5   6   7   8   9  10  11
+
+    row = mid // cols
+    col = mid % cols
+
+Type 2: Each row sorted, each column sorted (Staircase Search)
+--------------------------------------------------------------
+
+    Start from top-right or bottom-left:
+
+        +----+----+----+----+
+        |  1 |  4 |  7 | 11 | ← Start here
+        +----+----+----+----+
+        |  2 |  5 |  8 | 12 |
+        +----+----+----+----+
+        |  3 |  6 |  9 | 16 |
+        +----+----+----+----+
+        | 10 | 13 | 14 | 17 |
+        +----+----+----+----+
+
+    Target = 6
+
+    11 > 6 → move LEFT
+     7 > 6 → move LEFT
+     4 < 6 → move DOWN
+     5 < 6 → move DOWN
+     6 = 6 → FOUND!
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PATTERN 8: FIND MINIMUM IN ROTATED ARRAY                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Template:
+---------
+    def find_min(arr):
+        left, right = 0, len(arr) - 1
+
+        while left < right:
+            mid = left + (right - left) // 2
+
+            if arr[mid] > arr[right]:
+                left = mid + 1      # Min is on right
+            else:
+                right = mid         # Min is on left or at mid
+
+        return arr[left]
+
+Diagram:
+--------
+    Array: [4, 5, 6, 7, 0, 1, 2]
+
+        7 |         *
+        6 |     *
+        5 |   *
+        4 | *
+          |                     Minimum
+        2 |                         *
+        1 |                     *
+        0 |                 *   ← Answer
+          +─────────────────────────
+            0   1   2   3   4   5   6
+
+
+================================================================================
+                           COMMON MISTAKES TO AVOID
+================================================================================
+
+1. INTEGER OVERFLOW
+-------------------
+   Wrong:  mid = (left + right) / 2
+   Right:  mid = left + (right - left) / 2
+
+2. INFINITE LOOPS
+-----------------
+   Ensure left or right ALWAYS changes:
+   - Use mid + 1 or mid - 1 appropriately
+   - Choose correct condition: < vs <=
+
+3. OFF-BY-ONE ERRORS
+--------------------
+   ┌─────────────────────────────────────────────────────────┐
+   │  Pattern                  │  Condition  │  right init  │
+   ├─────────────────────────────────────────────────────────┤
+   │  Find exact element       │  left <= right │  n - 1    │
+   │  Lower/Upper bound        │  left < right  │  n        │
+   │  Find min in rotated      │  left < right  │  n - 1    │
+   └─────────────────────────────────────────────────────────┘
+
+4. WRONG COMPARISON
+-------------------
+   When to use arr[mid] vs arr[right]:
+   - Rotated array problems: compare with arr[right]
+   - Standard search: compare with target
+
+
+================================================================================
+                        BINARY SEARCH DECISION FLOWCHART
+================================================================================
+
+                                START
+                                  │
+                                  ▼
+                    ┌─────────────────────────┐
+                    │   Is array sorted?      │
+                    └─────────────────────────┘
+                           │           │
+                          YES          NO
+                           │           │
+                           ▼           ▼
+            ┌──────────────────┐   ┌──────────────────┐
+            │ Standard/Bound   │   │ Is it rotated    │
+            │ Binary Search    │   │ sorted array?    │
+            └──────────────────┘   └──────────────────┘
+                                          │
+                                   YES    │    NO
+                           ┌──────────────┴────────────┐
+                           ▼                           ▼
+              ┌──────────────────┐        ┌──────────────────┐
+              │ Rotated Array    │        │ Search on Answer │
+              │ Pattern          │        │ Space Pattern    │
+              └──────────────────┘        └──────────────────┘
+
+
+================================================================================
+                           PRACTICE PROBLEMS
+================================================================================
+
+EASY:
+-----
+1. Binary Search (LC 704)
+2. Search Insert Position (LC 35)
+3. First Bad Version (LC 278)
+4. Sqrt(x) (LC 69)
+
+MEDIUM:
+-------
+5. Find First and Last Position (LC 34)
+6. Search in Rotated Sorted Array (LC 33)
+7. Find Peak Element (LC 162)
+8. Search a 2D Matrix (LC 74)
+9. Koko Eating Bananas (LC 875)
+10. Capacity To Ship Packages Within D Days (LC 1011)
+
+HARD:
+-----
+11. Median of Two Sorted Arrays (LC 4)
+12. Find Minimum in Rotated Sorted Array II (LC 154)
+13. Split Array Largest Sum (LC 410)
+
+
+================================================================================
+                              QUICK REFERENCE
+================================================================================
+
+┌────────────────────┬──────────────────────────────────────────────────────┐
+│     Pattern        │              When to Use                             │
+├────────────────────┼──────────────────────────────────────────────────────┤
+│ Standard           │ Find exact target in sorted array                    │
+│ Lower Bound        │ First element >= target, first occurrence            │
+│ Upper Bound        │ First element > target, last occurrence              │
+│ Search on Answer   │ Minimize/Maximize value satisfying condition         │
+│ Rotated Array      │ Sorted array that has been rotated                   │
+│ Peak Element       │ Find local maximum                                   │
+│ 2D Matrix          │ Search in sorted matrix                              │
+└────────────────────┴──────────────────────────────────────────────────────┘
+
+
+================================================================================
+                                  THE END
+================================================================================
