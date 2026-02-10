@@ -118,6 +118,53 @@ class Graph:
         return arr
 
 
+    def DepthFirstSearchIterative(self, start_node):
+        """
+        Perform DFS iteratively using a stack.
+        - start_node: node to begin traversal
+        Returns: list of nodes visited in DFS order
+
+        """
+        # Initialize seen set and stack with starting node
+        seen = set()
+        # Add starting node to seen set
+        stack = [start_node]
+        # List to store the order of visited nodes
+        arr = []
+        # Iterate until stack is empty
+        while stack:
+            # Pop the last node from the stack
+            node = stack.pop()
+            print(node)
+            # Check if the node has not been seen before
+            for nei_node in self.adjList[node]:
+                # If the neighbor node has not been seen, add it to seen set, append to result list and push onto stack
+                if nei_node not in seen:
+                    # Mark the neighbor node as seen
+                    seen.add(nei_node)
+                    # Append the neighbor node to the result list
+                    arr.append(nei_node)
+                    # Push the neighbor node onto the stack for further exploration
+                    stack.append(nei_node)
+        return arr
+    def breadthFirstSearchIterative(self, start_node):
+        """
+        Perform BFS using a queue.
+        - start_node: node to begin traversal
+        Returns: list of nodes visited in BFS order
+        """
+        seen = set()
+        queue = [start_node]
+        arr = []
+        while queue:
+            node = queue.pop(0)  # Dequeue the first node
+            print(node)
+            for nei_node in self.adjList[node]:
+                if nei_node not in seen:
+                    seen.add(nei_node)
+                    arr.append(nei_node)
+                    queue.append(nei_node)  # Enqueue the neighbor node
+        return arr
 # -----------------------------
 # Example Usage
 # -----------------------------
@@ -141,3 +188,12 @@ dfs_result = [0]
 dfs_result.extend(graph.DepthFirstSearchRecursive(0, seen))
 print("DFS Traversal Result:")
 print(dfs_result)
+
+# Perform iterative DFS starting from node 0
+iterative_dfs_result = graph.DepthFirstSearchIterative(0)
+print("Iterative DFS Traversal Result:")
+print(iterative_dfs_result)
+# Perform BFS starting from node 0
+bfs_result = graph.breadthFirstSearchIterative(0)
+print("BFS Traversal Result:")
+print(bfs_result)
