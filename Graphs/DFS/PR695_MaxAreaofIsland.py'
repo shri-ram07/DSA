@@ -1,0 +1,80 @@
+
+
+def dfs(grid, i, j):
+    """
+    Depth-First Search (DFS) helper function.
+
+    This function explores an island starting from cell (i, j).
+    It marks visited land cells as 0 to avoid revisiting and
+    recursively explores all four directions (up, down, left, right).
+
+    Parameters:
+        grid (List[List[int]]): 2D grid of 0s (water) and 1s (land).
+        i (int): Row index of the current cell.
+        j (int): Column index of the current cell.
+
+    Returns:
+        int: The area (number of cells) of the island connected to (i, j).
+
+    Diagram (DFS exploration):
+        Suppose we start at (i, j) marked as 'X':
+
+            [1][1][0][0]
+            [1][X][0][1]
+            [0][1][1][1]
+            [0][0][0][1]
+
+        DFS will:
+        - Count the current cell
+        - Move Up, Down, Left, Right
+        - Continue until all connected '1's are visited
+        - Return the total area of this island
+    """
+    if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] == 0:
+        return 0
+    grid[i][j] = 0  # mark visited
+    area = 1
+    area += dfs(grid, i+1, j)  # Down
+    area += dfs(grid, i-1, j)  # Up
+    area += dfs(grid, i, j+1)  # Right
+    area += dfs(grid, i, j-1)  # Left
+    return area
+
+
+class Solution:
+    """
+    Solution class for the 'Max Area of Island' problem.
+
+    Problem:
+        Given a 2D grid of 0s (water) and 1s (land),
+        find the largest island (connected group of 1s).
+        An island is connected horizontally or vertically.
+
+    Approach:
+        - Iterate through each cell in the grid.
+        - When a land cell (1) is found, run DFS to compute its area.
+        - Track the maximum area encountered.
+        - Return the maximum island area.
+
+    Example:
+        Input:
+            grid = [
+                [0,0,1,0],
+                [1,1,1,0],
+                [0,1,0,0],
+                [1,0,0,0]
+            ]
+
+        Output:
+            5  (largest island has 5 connected land cells)
+    """
+    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        maxx = 0
+        if not grid or not grid[0]:
+            return 0
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == 1:  # Found new island
+                    area = dfs(grid, i, j)
+                    maxx = max(maxx, area)
+        return maxx
