@@ -34,8 +34,6 @@ class Solution:
         for i in range(numCourses):
             if not TopologicalSort(i , ad_li , indegree):
                 return False
-
-        
         return True
     
 obj = Solution()
